@@ -103,7 +103,9 @@ func UserSaveController(req *gweb.HttpRequest) *gweb.HttpResult {
 
 // 修改自己密码（JSON提交方式）
 func UserChangePswController(req *gweb.HttpRequest) *gweb.HttpResult {
-
+	if conf.IsUcEnable() {
+		return gweb.Error500("用户中心模式，暂不支持修改！")
+	}
 	token := req.GetToken()
 	username := GetUsernameByToken(token)
 	if (!InWhiteList(req) && InBlackList(req)) || !conf.IsEnableLogin() || username == "" {

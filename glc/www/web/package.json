@@ -1,10 +1,10 @@
 {
   "name": "glc",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "LGPL-3.0",
   "scripts": {
     "serve": "vite",
-    "build": "vite build",
+    "build": "vite build --debug",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -38,7 +38,7 @@
     "less": "^4.1.3",
     "lint-staged": "^13.1.1",
     "mockjs": "^1.1.0",
-    "node-sass": "^8.0.0",
+    "node-sass": "^9.0.0",
     "postcss-html": "^1.5.0",
     "postcss-less": "^6.0.0",
     "prettier": "^2.8.4",

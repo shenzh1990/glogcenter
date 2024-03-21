@@ -6,7 +6,7 @@ import { enableLogin } from '~/api';
 import { staticRouters } from './static.routers';
 
 // 白名单
-const WHITE_LIST = ['/login'];
+const WHITE_LIST = ['/login','/loginbyuc'];
 
 // 此处不能初始化，否则无法持久化
 let tabsState = null;
@@ -29,13 +29,12 @@ router.beforeEach(async (to, from, next) => {
   !tokenStore && (tokenStore = useTokenStore());
   !tabsState && (tabsState = useTabsState());
   !menuState && (menuState = useMenuState());
-
+  console.log(to.fullPath)
   // 1、白名单页面可以随时跳转，通常是没有参数的静态路由，如登入页面这种
   if (WHITE_LIST.indexOf(to.path) !== -1) {
     next();
     return;
   }
-
   // 2、检查令牌（未登录时跳转登录页面）
   if (tokenStore.needLogin == 'unknow') {
     await enableLogin();

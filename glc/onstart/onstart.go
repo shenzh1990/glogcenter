@@ -1,6 +1,7 @@
 package onstart
 
 import (
+	"github.com/gotoeasy/glang/cmn"
 	"glc/conf"
 	"glc/gweb"
 	"glc/gweb/http"
@@ -13,12 +14,13 @@ import (
 )
 
 func Run() {
-
+	cmn.Info("Http Server Start")
 	http.StartHttpServer(func() {
 
 		contextPath := conf.GetContextPath() // ContextPath
 
 		// Html静态文件
+		gweb.RegisterController(method.GET, "/loginbyuc", html.HomeIndexHtmlController)    // [响应/loginbyuc]
 		gweb.RegisterController(method.GET, contextPath+"/", html.HomeIndexHtmlController) // [响应/glc/]
 		gweb.RegisterController(method.GET, "/**/*.html", html.StaticFileController)
 		gweb.RegisterController(method.GET, "/**/*.css", html.StaticFileController)
@@ -45,6 +47,7 @@ func Run() {
 		gweb.RegisterController(method.POST, contextPath+"/v1/store/mode", controller.TestModeController)                        // 查询是否测试模式
 		gweb.RegisterController(method.POST, contextPath+"/v1/user/enableLogin", controller.IsEnableLoginController)             // 查询是否开启用户密码登录功能
 		gweb.RegisterController(method.POST, contextPath+"/v1/user/login", controller.LoginController)                           // Login
+		gweb.RegisterController(method.POST, contextPath+"/v1/user/loginbyuc", controller.LoginByUcController)                   // Loginbyuc
 		gweb.RegisterController(method.POST, contextPath+conf.UserTransferLogin, controller.UserTransferLoginController)         // 转发Login
 		gweb.RegisterController(method.POST, contextPath+"/v1/version/info", controller.VersionController)                       // 查询版本信息
 		gweb.RegisterController(method.POST, contextPath+"/v1/sysuser/list", controller.UserListController)                      // [用户]列表查询
@@ -70,5 +73,4 @@ func Run() {
 		cluster.Start() // 显式调用触发加入集群或初始化集群
 		rabbitmq.Start()
 	})
-
 }

@@ -3,6 +3,6 @@ package www
 import "embed"
 
 var (
-	//go:embed web/dist/*
+	//go:embed  web/dist/*
 	Static embed.FS
 )

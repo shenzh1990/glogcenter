@@ -16,6 +16,10 @@ export const staticRouters = [
     redirect: '/glc/search',
   },
   {
+    path: '/loginbyuc',
+    component: () => import('~/views/login/LoginByUc.vue'), // 用户中心登录路由，必有
+  },
+  {
     path: '/login',
     component: () => import('~/views/login/Login.vue'), // 登录路由，必有
   },

@@ -34,6 +34,22 @@ export const userLogin = async params => {
   return rs.result;
 };
 
+// 通过用户中心
+export const userLoginByUc = async params => {
+  const { uc_token } = params;
+  console.log(uc_token)
+  const rs = await $post('/v1/user/loginbyuc', { uc_token }, null, { 'Content-Type': 'application/x-www-form-urlencoded' });
+  if (!rs.success) {
+    return $msg.notify(rs.message, 'error');
+  }
+
+  const tokenStore = useTokenStore();
+  tokenStore.token = rs.result.token; // 令牌
+  tokenStore.role = rs.result.role; // 角色
+  tokenStore.loginUserName = rs.result.username;
+  tokenStore.time = new Date().getTime();
+  return rs.result;
+};
 // 用户登出
 export const userLogout = () => {
   useTokenStore().$reset();

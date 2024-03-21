@@ -14,7 +14,7 @@ import (
 )
 
 func init() {
-
+	cmn.Info("Daemon init")
 	// 命令行参数解析，【-d】后台方式启动，【stop】停止，【restart】重启，【-v/version/--version/-version】查看版本
 	// 内部用特殊参数，提示docker方式启动【--docker】固定为非后台方式
 	daemon := false
@@ -47,21 +47,20 @@ func init() {
 		fmt.Printf("%s\n", "glogcenter "+ver.VERSION)
 		os.Exit(0)
 	}
-
-	// 【alpine以外未足够测试，暂且默认支持alpine容器及window开发调试，可按需注释掉】
-	if !cmn.IsWin() {
-		info, _ := cmn.MeasureHost()
-		if info == nil || !cmn.ContainsIngoreCase(info.Platform, "alpine") {
-			fmt.Printf("%s\n", info.Platform)
-			os.Exit(0)
+	if !cmn.IsMac() {
+		// 【alpine以外未足够测试，暂且默认支持alpine容器及window开发调试，可按需注释掉】
+		if !cmn.IsWin() {
+			info, _ := cmn.MeasureHost()
+			if info == nil || !cmn.ContainsIngoreCase(info.Platform, "alpine") {
+				fmt.Printf("%s\n", info.Platform)
+				os.Exit(0)
+			}
+		}
+		// 其余参数仅支持linux
+		if !cmn.IsLinux() {
+			return
 		}
 	}
-
-	// 其余参数仅支持linux
-	if !cmn.IsLinux() {
-		return
-	}
-
 	// 端口冲突时退出
 	if cmn.IsPortOpening("8080") {
 		fmt.Printf("%s\n", "port 8080 conflict, startup failed.")

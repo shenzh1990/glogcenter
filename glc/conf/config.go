@@ -59,8 +59,13 @@ var tokenSalt string
 var aryWhite []string
 var aryBlack []string
 var ipAddCity bool
+var ucEnable bool
+var ucAppKey string
+var ucAppSecret string
+var ucAppUrl string
 
 func init() {
+	cmn.Info("Config init")
 	UpdateConfigByEnv()
 }
 
@@ -80,7 +85,7 @@ func UpdateConfigByEnv() {
 	amqpQueueName = cmn.GetEnvStr("GLC_AMQP_QUEUE_NAME", "glc-log-queue")       // rabbitMq队列名
 	amqpJsonFormat = cmn.GetEnvBool("GLC_AMQP_JSON_FORMAT", true)               // rabbitMq消息文本是否为json格式，默认true
 	saveDays = cmn.GetEnvInt("GLC_SAVE_DAYS", 180)                              // 日志分仓时的保留天数(0~1200)，0表示不自动删除，默认180天
-	enableLogin = cmn.GetEnvBool("GLC_ENABLE_LOGIN", false)                     // 是否开启用户密码登录，默认“false”
+	enableLogin = cmn.GetEnvBool("GLC_ENABLE_LOGIN", true)                      // 是否开启用户密码登录，默认“false”
 	sessionTimeout = cmn.GetEnvInt("GLC_SESSION_TIMEOUT", 30)                   // 登录会话超时时间，默认“30”分钟
 	username = cmn.GetEnvStr("GLC_USERNAME", "glc")                             // 登录用户名，默认“glc”
 	password = cmn.GetEnvStr("GLC_PASSWORD", "GLogCenter100%666")               // 登录密码，默认“GLogCenter100%666”
@@ -98,10 +103,38 @@ func UpdateConfigByEnv() {
 	minioBucket = cmn.GetEnvStr("GLC_MINIO_BUCKET", "")                         // 【X】MINIO桶名，默认“”
 	enableUploadMinio = cmn.GetEnvBool("GLC_ENABLE_UPLOAD_MINIO", false)        // 【X】是否开启上传备份至MINIO服务器，默认false
 	goMaxProcess = getGoMaxProcessConf(cmn.GetEnvInt("GLC_GOMAXPROCS", -1))     // 使用的最大CPU数量，默认是最大CPU数量（设定值不在实际数量范围是按最大看待）
-	enableCors = cmn.GetEnvBool("GLC_ENABLE_CORS", false)                       // 是否允许跨域，默认false
+	enableCors = cmn.GetEnvBool("GLC_ENABLE_CORS", true)                        // 是否允许跨域，默认false
 	pageSize = getPageSizeConf(cmn.GetEnvInt("GLC_PAGE_SIZE", 100))             // 每次检索件数，默认100（有效范围1~1000）
 	mulitLineSearch = cmn.GetEnvBool("GLC_SEARCH_MULIT_LINE", false)            // 是否检索日志的全部行（日志可能有换行），默认false仅第一行
-	testMode = cmn.GetEnvBool("GLC_TEST_MODE", false)                           // 是否测试模式，默认false
+	testMode = cmn.GetEnvBool("GLC_TEST_MODE", true)                            // 是否测试模式，默认false
+	//新增，配合用户中心使用
+	//    appKey:  SoqpfiO880oIvbp1
+	//    appSecret: nWPlqRnRWbMkqiKz6J67HZfFjEDDWlve
+	//    appUrl: "http://192.168.100.44:8082" #/data-service/api/token/generate
+	ucEnable = cmn.GetEnvBool("GLC_UC_ENABLE", true)                                     // 是否启用用户中心模式，默认false
+	ucAppKey = cmn.GetEnvStr("GLC_UC_APP_KEY", "SoqpfiO880oIvbp1")                       // 用户中心模式，appKey,默认""
+	ucAppSecret = cmn.GetEnvStr("GLC_UC_APP_SECRET", "nWPlqRnRWbMkqiKz6J67HZfFjEDDWlve") // 用户中心模式，appSecret,默认""
+	ucAppUrl = cmn.GetEnvStr("GLC_UC_APP_URL", "http://192.168.100.44:8082")             // 用户中心模式，用户中心地址,默认""
+}
+
+// 取配置： 是否启用用户中心模式，默认false
+func IsUcEnable() bool {
+	return ucEnable
+}
+
+// 取配置： 用户中心模式，appKey,默认""
+func GetUcAppKey() string {
+	return ucAppKey
+}
+
+// 取配置：用户中心模式，appSecret,默认""
+func GetUcAppSecret() string {
+	return ucAppSecret
+}
+
+// 取配置： 用户中心模式，用户中心地址,默认""
+func GetUcAppUrl() string {
+	return ucAppUrl
 }
 
 // 取配置： IP是否要自动附加城市信息，默认false
@@ -243,6 +276,9 @@ func IsEnableLogin() bool {
 // 取配置： 登录用户名，可通过环境变量“GLC_USERNAME”设定，默认“glc”
 func GetUsername() string {
 	return username
+}
+func SetUsername(user string) {
+	username = user
 }
 
 // 存取配置： 登录用户名，可通过环境变量“GLC_PASSWORD”设定，默认“glogcenter”

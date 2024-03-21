@@ -81,8 +81,8 @@ func NewLogDataStorage(storeName string) *LogDataStorage { // 存储器，文档
 	store.closing = false
 	store.lastTime = time.Now().Unix()
 	store.storeChan = make(chan *LogDataModel, conf.GetStoreChanLength()) // 初始化管道，设定缓冲
-
-	dbPath := conf.GetStorageRoot() + cmn.PathSeparator() + cacheName
+	storageRoot := conf.GetStorageRoot()
+	dbPath := storageRoot + cmn.PathSeparator() + cacheName
 	db, err := leveldb.OpenFile(dbPath, nil) // 打开（在指定子目录中存放数据）
 	if err != nil {
 		cmn.Error("打开LogDataStorage失败：", dbPath)

@@ -67,10 +67,10 @@ func Run() {
 		ldb.AddTextLog(md)
 		c.JSON(http.StatusOK, Ok())
 	})
-
+	cmn.Info(ginEngine.Routes())
 	ginEngine.NoRoute(func(c *gin.Context) {
 		req := NewHttpRequest(c)
-
+		cmn.Info("请求路径：" + c.Request.URL.Path)
 		// filter
 		filters := getFilters()
 		for _, fnFilter := range filters {

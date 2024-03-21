@@ -62,7 +62,7 @@ export default ({ mode }) => {
     },
     esbuild: {
       // 打包时要去除的语句
-      pure: VITE_PRD_DROP_DEBUGGER ? ['console.log', 'console.debug', 'console.info', 'debugger'] : ['console.log', 'console.debug', 'console.info'],
+      pure: VITE_PRD_DROP_DEBUGGER ? [] : [],
     },
 
     build: {
@@ -73,9 +73,9 @@ export default ({ mode }) => {
       rollupOptions: {
         output: {
           // 打包时按类型生成整洁的文件
-          chunkFileNames: 'assets/glc-chunk-[hash].js',
-          entryFileNames: 'assets/glc-entry-[hash].js',
-          assetFileNames: 'assets/glc-asset-[hash].[ext]',
+          chunkFileNames: 'assets/ml-chunk-[hash].js',
+          entryFileNames: 'assets/ml-entry-[hash].js',
+          assetFileNames: 'assets/ml-asset-[hash].[ext]',
         },
       },
     },
