@@ -1,3 +1,35 @@
+<div align=center>
+<img src="https://gotoeasy.github.io/screenshots/glogcenter/logo.png"/>
+</div>
+
+
+# 缘起
+
+昔者，吾日志中心之事，恒用传统三件套，曰`ELK`，然岁月流转，如行舟江河，难免潮涌沉浮，不维其盛，则不足以久存。故见诸多不如意，如定制之难，如索引之弗易，如初启之迟缓如蜗牛，如操作之陌生如他邦，如资甚之贪婪如饕餮之兽，如崩溃之险如山崩川竭，疑难重重，如堆积之沙石。<br>
+<br>
+终有一日，愈发执志，以`go`之巧工，铸造新日志中心，其表现多舛，实足以令人惊艳，是以，赋名曰`glogcenter`，亦称`GLC`，开仓建库。<br>
+<br>
+当下，架库之作已可窥见，与君共享。<br>
+`（以上由GPT编辑）`
+<br>
+
+<p align="center">
+    <a href="https://golang.google.cn"><img src="https://img.shields.io/badge/golang-1.21.4-brightgreen.svg"></a>
+    <a href="https://hub.docker.com/r/gotoeasy/glc"><img src="https://img.shields.io/docker/pulls/gotoeasy/glc"></a>
+    <a href="https://github.com/gotoeasy/glogcenter/releases/latest"><img src="https://img.shields.io/github/release/gotoeasy/glogcenter.svg"></a>
+    <a href="https://github.com/gotoeasy/glogcenter/blob/master/LICENSE"><img src="https://img.shields.io/github/license/gotoeasy/glogcenter"></a>
+<p>
+
+<br>
+<br>
+国外仓库地址： https://github.com/gotoeasy/glogcenter <br>
+国内(仅同步)： https://gitee.com/gotoeasy/glogcenter
+<br>
+<br>
+演示地址(网络可能不稳定)： https://glc.gotoeasy.top
+<br>
+<br>
+
 ## 特点
 - [x] 使用`golang`实现，具备`go`的各种特性优势，特别是性能高、节省资源
 - [x] 基于`LSMT`实现文件存储，结合日志写多读少特点稍加设计，真是快
@@ -12,6 +44,13 @@
 - [x] 支持登录验证，支持秘钥校验，支持跨域设定，灵活的服务安全性保障
 - [x] 支持多服务集群模式部署，提供服务高可用性保障、数据冗余性保障
 - [x] 系统间的耦合性极低，可以非常方便的接入各系统，上至央企大项目下至本地开发调试，已历经众多案例磨炼，表现稳定出色，达`生产级应用`要求
+
+
+<div align=center>
+<img src="https://gotoeasy.github.io/screenshots/glogcenter/glogcenter.png"/>
+</div>
+
+<br>
 
 ## `docker`单机部署模式简易示例
 ```shell
@@ -195,10 +234,11 @@ func main() {
 - [ ] 日志审计、告警
 - [ ] 集群支持动态删减节点（或是页面管理删除）
 
+
 ### 版本`0.14.2`
 
 - [x] 修复#32 隐蔽的权限控制错误问题
-- 
+
 ### 版本`0.14.1`
 
 - [x] 新增`GLC_IP_ADD_CITY`环境变量，对IP字段是否自动附加城市信息，默认`false`

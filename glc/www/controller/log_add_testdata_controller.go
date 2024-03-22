@@ -70,7 +70,7 @@ func JsonLogAddTestDataController(req *gweb.HttpRequest) *gweb.HttpResult {
 			go TransferGlc(conf.LogTransferAdd, md3.ToJson()) // 转发其他GLC服务
 		}
 
-		if cnt >= 10000 {
+		if cnt >= 1000 {
 			break
 		}
 	}
