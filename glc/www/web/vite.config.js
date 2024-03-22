@@ -62,7 +62,7 @@ export default ({ mode }) => {
     },
     esbuild: {
       // 打包时要去除的语句
-      pure: VITE_PRD_DROP_DEBUGGER ? [] : [],
+      pure: VITE_PRD_DROP_DEBUGGER ? ['console.log', 'console.debug', 'console.info', 'debugger'] : ['console.log', 'console.debug', 'console.info'],
     },
 
     build: {

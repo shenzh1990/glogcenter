@@ -5,7 +5,15 @@
         <el-input v-model="formData.searchKeys" placeholder="请输入关键词检索，支持多关键词" input-style="width:500px;height: 30px"
           maxlength="1000" @keyup.enter="fnSearch">
           <template #append>
-            <el-button type="primary" class="c-btn-search" style="height:30px;color: white; background-color:#0081dd"
+            <el-badge is-dot :hidden="noMoreSearchCondition" style="margin-left:5px;margin-right:5px;" type="primary" class="c-btn-badge">
+              <el-button size="small" style="border-color: #d1dbe5 ;" circle @click="() => (moreVisible = !moreVisible)">
+                <el-icon>
+                  <ArrowUp v-if="moreVisible" />
+                  <ArrowDown v-else />
+                </el-icon>
+              </el-button>
+            </el-badge>
+            <el-button type="primary" class="c-btn-search" style="margin-left: 10px;height:30px;color: white; background-color:#0081dd"
               @click="fnSearch">
               <el-icon>
                 <Search />
@@ -14,16 +22,8 @@
             </el-button>
           </template>
         </el-input>
-        <GxButton icon="refresh-left" style="margin-left:108px;" @click="fnReset">重 置</GxButton>
-        <el-badge is-dot :hidden="noMoreSearchCondition" style="margin-left:12px;" type="primary" class="c-btn-badge">
-          <el-button circle @click="() => (moreVisible = !moreVisible)">
-            <el-icon>
-              <ArrowUp v-if="moreVisible" />
-              <ArrowDown v-else />
-            </el-icon>
-          </el-button>
-        </el-badge>
       </el-form-item>
+      <GxButton icon="refresh-left" style="margin-left:-10px;" @click="fnReset">重 置</GxButton>
     </el-row>
 
     <div v-show="moreVisible" class="c-down-panel">
