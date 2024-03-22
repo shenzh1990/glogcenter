@@ -63,6 +63,7 @@ var ucEnable bool
 var ucAppKey string
 var ucAppSecret string
 var ucAppUrl string
+var ucHomeUrl string
 
 func init() {
 	cmn.Info("Config init")
@@ -114,7 +115,8 @@ func UpdateConfigByEnv() {
 	ucEnable = cmn.GetEnvBool("GLC_UC_ENABLE", true)                                     // 是否启用用户中心模式，默认false
 	ucAppKey = cmn.GetEnvStr("GLC_UC_APP_KEY", "SoqpfiO880oIvbp1")                       // 用户中心模式，appKey,默认""
 	ucAppSecret = cmn.GetEnvStr("GLC_UC_APP_SECRET", "nWPlqRnRWbMkqiKz6J67HZfFjEDDWlve") // 用户中心模式，appSecret,默认""
-	ucAppUrl = cmn.GetEnvStr("GLC_UC_APP_URL", "http://192.168.100.44:8082")             // 用户中心模式，用户中心地址,默认""
+	ucAppUrl = cmn.GetEnvStr("GLC_UC_APP_URL", "http://192.168.100.44:8082")             // 用户中心模式，用户中心接口地址,默认""
+	ucHomeUrl = cmn.GetEnvStr("GLC_UC_HOME_URL", "http://192.168.100.44:8081")           // 用户中心模式，用户中心首页地址,默认""
 }
 
 // 取配置： 是否启用用户中心模式，默认false
@@ -135,6 +137,11 @@ func GetUcAppSecret() string {
 // 取配置： 用户中心模式，用户中心地址,默认""
 func GetUcAppUrl() string {
 	return ucAppUrl
+}
+
+// 取配置： 用户中心模式，用户中心首页地址,默认""
+func GetUcHomeUrl() string {
+	return ucHomeUrl
 }
 
 // 取配置： IP是否要自动附加城市信息，默认false

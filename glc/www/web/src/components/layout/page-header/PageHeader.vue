@@ -73,12 +73,13 @@ import { userLogout } from '~/api';
 
 const router = useRouter();
 const verInfo = ref('');
+const urlInfo = ref('');
 const tokenStore = useTokenStore();
 const themeStore = useThemeStore();
 const formData = ref({ oldPassword: '', password1: '', password2: '' });
 const form = ref(); // 表单实例
 const dialog = ref();
-const checkVersionDone = ref(false)
+// const checkVersionDone = ref(false)
 
 const validatePass2 = (rule, value, callback) => {
   if (!value) {
@@ -100,6 +101,7 @@ const headerHeight = computed(() => `${themeStore.headerHeight}px`);
 const needLogin = computed(() => tokenStore.needLogin == 'true');
 const headerColor = computed(() => {
   if (themeStore.headerBgColor.toLowerCase() === '#ffffff') {
+    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
     themeStore.headerColor = '#606266';
   }
   return themeStore.headerColor
@@ -107,8 +109,10 @@ const headerColor = computed(() => {
 const headerActiveColor = computed(() => {
   if (!themeStore.customHeaderColor) {
     if (themeStore.headerBgColor.toLowerCase() === '#ffffff') {
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       themeStore.headerActiveColor = '#606266';
     } else {
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       themeStore.headerActiveColor = themeStore.headerColor;
     }
   }
@@ -117,8 +121,10 @@ const headerActiveColor = computed(() => {
 const headerActiveBgColor = computed(() => {
   if (!themeStore.customHeaderColor) {
     if (themeStore.headerBgColor.toLowerCase() === '#ffffff') {
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       themeStore.headerActiveBgColor = gxUtil.darkColor(themeStore.headerBgColor, 0.1);
     } else {
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       themeStore.headerActiveBgColor = gxUtil.lightColor(themeStore.headerBgColor);
     }
   }
@@ -168,29 +174,37 @@ async function logout() {
 }
 
 const clickLogo = () => {
-  window.open('', '_blank');
+  $post('/v1/uc/addr', {}, null, { 'Content-Type': 'application/x-www-form-urlencoded' }).then(rs => {
+    if (rs.success) {
+      urlInfo.value = rs.result.url
+    }
+    if (urlInfo.value !==""){
+      window.open(urlInfo.value, '_blank');
+    }
+  });
 };
 
 function checkVersion() {
-  if (!checkVersionDone.value) {
-    checkVersionDone.value = true;
-    // 从后台服务读取当前运行版本，避免多处维护版本号
-    $post('/v1/version/info', {}, null, { 'Content-Type': 'application/x-www-form-urlencoded' }).then(rs => {
-      if (rs.success) {
-        verInfo.value = rs.result.version
-        if (rs.result.latest && normalizeVer(rs.result.version) < normalizeVer(rs.result.latest)) {
-          verInfo.value = `当前版本 ${rs.result.version} ，有新版本 ${rs.result.latest} 可更新`
-        }
-      }
-    });
-  }
+  // 不提示更新
+  // if (!checkVersionDone.value) {
+  //   checkVersionDone.value = true;
+  //   // 从后台服务读取当前运行版本，避免多处维护版本号
+  //   $post('/v1/version/info', {}, null, { 'Content-Type': 'application/x-www-form-urlencoded' }).then(rs => {
+  //     if (rs.success) {
+  //       verInfo.value = rs.result.version
+  //       if (rs.result.latest && normalizeVer(rs.result.version) < normalizeVer(rs.result.latest)) {
+  //         verInfo.value = `当前版本 ${rs.result.version} ，有新版本 ${rs.result.latest} 可更新`
+  //       }
+  //     }
+  //   });
+  // }
 }
 
-// 0.1.2 => v100.1001.1002
-function normalizeVer(ver) {
-  const ary = ver.replace("v", "").split(".")
-  return `v${100 + (ary[0] - 0)}.${1000 + (ary[1] - 0)}.${1000 + (ary[2] - 0)}`
-}
+// // 0.1.2 => v100.1001.1002
+// function normalizeVer(ver) {
+//   const ary = ver.replace("v", "").split(".")
+//   return `v${100 + (ary[0] - 0)}.${1000 + (ary[1] - 0)}.${1000 + (ary[2] - 0)}`
+// }
 
 </script>
 

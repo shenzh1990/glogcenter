@@ -36,20 +36,21 @@ func Run() {
 		gweb.RegisterController(method.GET, "/**/*.xml", html.StaticFileController)
 
 		// 控制器
-		gweb.RegisterController(method.POST, contextPath+"/v1/log/add", controller.JsonLogAddController)                         // 添加日志
-		gweb.RegisterController(method.POST, contextPath+"/v1/log/addTestData", controller.JsonLogAddTestDataController)         // 添加测试日志（仅测试模式有效）
-		gweb.RegisterController(method.POST, contextPath+conf.LogTransferAdd, controller.JsonLogTransferAddController)           // 日志数据转发添加日志
-		gweb.RegisterController(method.POST, contextPath+"/v1/log/search", controller.LogSearchController)                       // 查询日志
-		gweb.RegisterController(method.POST, contextPath+"/v1/store/names", controller.StorageNamesController)                   // 查询日志仓名称列表
-		gweb.RegisterController(method.POST, contextPath+"/v1/store/list", controller.StorageListController)                     // 查询日志仓信息列表
-		gweb.RegisterController(method.POST, contextPath+"/v1/store/delete", controller.StorageDeleteController)                 // 删除日志仓
-		gweb.RegisterController(method.POST, contextPath+"/v1/store/systems", controller.SystemNamesController)                  // 查询系统名列表
-		gweb.RegisterController(method.POST, contextPath+"/v1/store/mode", controller.TestModeController)                        // 查询是否测试模式
-		gweb.RegisterController(method.POST, contextPath+"/v1/user/enableLogin", controller.IsEnableLoginController)             // 查询是否开启用户密码登录功能
-		gweb.RegisterController(method.POST, contextPath+"/v1/user/login", controller.LoginController)                           // Login
-		gweb.RegisterController(method.POST, contextPath+"/v1/user/loginbyuc", controller.LoginByUcController)                   // Loginbyuc
-		gweb.RegisterController(method.POST, contextPath+conf.UserTransferLogin, controller.UserTransferLoginController)         // 转发Login
-		gweb.RegisterController(method.POST, contextPath+"/v1/version/info", controller.VersionController)                       // 查询版本信息
+		gweb.RegisterController(method.POST, contextPath+"/v1/log/add", controller.JsonLogAddController)                 // 添加日志
+		gweb.RegisterController(method.POST, contextPath+"/v1/log/addTestData", controller.JsonLogAddTestDataController) // 添加测试日志（仅测试模式有效）
+		gweb.RegisterController(method.POST, contextPath+conf.LogTransferAdd, controller.JsonLogTransferAddController)   // 日志数据转发添加日志
+		gweb.RegisterController(method.POST, contextPath+"/v1/log/search", controller.LogSearchController)               // 查询日志
+		gweb.RegisterController(method.POST, contextPath+"/v1/store/names", controller.StorageNamesController)           // 查询日志仓名称列表
+		gweb.RegisterController(method.POST, contextPath+"/v1/store/list", controller.StorageListController)             // 查询日志仓信息列表
+		gweb.RegisterController(method.POST, contextPath+"/v1/store/delete", controller.StorageDeleteController)         // 删除日志仓
+		gweb.RegisterController(method.POST, contextPath+"/v1/store/systems", controller.SystemNamesController)          // 查询系统名列表
+		gweb.RegisterController(method.POST, contextPath+"/v1/store/mode", controller.TestModeController)                // 查询是否测试模式
+		gweb.RegisterController(method.POST, contextPath+"/v1/user/enableLogin", controller.IsEnableLoginController)     // 查询是否开启用户密码登录功能
+		gweb.RegisterController(method.POST, contextPath+"/v1/user/login", controller.LoginController)                   // Login
+		gweb.RegisterController(method.POST, contextPath+"/v1/user/loginbyuc", controller.LoginByUcController)           // Loginbyuc
+		gweb.RegisterController(method.POST, contextPath+conf.UserTransferLogin, controller.UserTransferLoginController) // 转发Login
+		//gweb.RegisterController(method.POST, contextPath+"/v1/version/info", controller.VersionController)                       // 查询版本信息
+		gweb.RegisterController(method.POST, contextPath+"/v1/uc/addr", controller.UcHomeController)                             // 查询用户中心地址
 		gweb.RegisterController(method.POST, contextPath+"/v1/sysuser/list", controller.UserListController)                      // [用户]列表查询
 		gweb.RegisterController(method.POST, contextPath+"/v1/sysuser/save", controller.UserSaveController)                      // [用户]保存
 		gweb.RegisterController(method.POST, contextPath+"/v1/sysuser/del", controller.UserDelController)                        // [用户]删除

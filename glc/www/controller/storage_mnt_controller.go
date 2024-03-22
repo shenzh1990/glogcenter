@@ -26,7 +26,13 @@ func VersionController(req *gweb.HttpRequest) *gweb.HttpResult {
 	rs := cmn.OfMap("version", ver.VERSION, "latest", glcLatest) // version当前版本号，latest最新版本号
 	return gweb.Result(rs)
 }
-
+func UcHomeController(req *gweb.HttpRequest) *gweb.HttpResult {
+	rs := cmn.OfMap("url", "")
+	if conf.IsUcEnable() {
+		rs = cmn.OfMap("url", conf.GetUcHomeUrl())
+	}
+	return gweb.Result(rs)
+}
 func SetOrigin(req *gweb.HttpRequest) {
 	origin := req.GinCtx.GetHeader("Origin")
 	if origin != "" {
