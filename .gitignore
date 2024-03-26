@@ -1,0 +1,29 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Dependency directories (remove the comment below to include it)
+# vendor/
+
+/**/dist/
+/**/node_modules/
+/glc/glc
+/glc/Dockerfile
+
+/glc-logback-appender/.settings/
+/glc-logback-appender/target/
+/**/.classpath
+/**/.project
+
+
+/glc/www/web/src/pkgs/*/
+/glc/www/web/src/pkgs/index-pkgs.js

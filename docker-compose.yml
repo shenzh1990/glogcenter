@@ -1,0 +1,92 @@
+version: '3'
+services:
+  glc:
+    image: '192.168.100.42/mlsk/logcenter:0.0.1'
+    container_name: glc
+    ports:
+      - '8080:8080'
+    environment:
+      # 【X】存储通道长度 默认64
+      GLC_STORE_CHAN_LENGTH: '64'
+      #【X】最大闲置时间（秒）,超过闲置时间将自动关闭，0时表示不关闭,默认300
+      GLC_MAX_IDLE_TIME: '300'
+      # 【存储名是否自动添加日期（日志量大通常按日单位区分存储），默认true
+      GLC_STORE_NAME_AUTO_ADD_DATE: 'true'
+      # 【例】每天一个日志仓，自动维护保留X天,默认180天
+      GLC_SAVE_DAYS: '90'
+      # 服务URL，默认“”，集群配置时自动获取地址可能不对，可通过这个设定
+      GLC_SERVER_URL: ''
+      # 【X】服务IP，默认“”，当“”时会自动获取
+      GLC_SERVER_IP: ''
+      # 【例】开启登录，设定管理员的用户密码、令牌盐、黑白名单组合控制仅内网及指定的IP允许访问
+      # 用户中心模式请开启
+      GLC_ENABLE_LOGIN: 'true'
+      #会话x分钟超时， 默认30分钟
+      GLC_SESSION_TIMEOUT: '30'
+      # 管理员用户名称 默认glc，用户中心下无效
+      GLC_USERNAME: 'glc'
+      # 管理员用户密码 默认GLogCenter100%666
+      GLC_PASSWORD: 'GLogCenter100%666'
+      # 令牌盐，默认“”
+      GLC_TOKEN_SALT: 'salt'
+      # IP或区域白名单，逗号分隔，默认“”
+      GLC_WHITE_LIST: '100.101.102.103,100.101.102.104'
+      # IP或区域黑名单，逗号分隔，单个*代表全部，内网地址不受限制，默认“”
+      GLC_BLACK_LIST: '*'
+      # IP是否要自动附加城市信息，默认false
+      GLC_IP_ADD_CITY: 'false'
+      #  是否开启集群模式，默认false
+      GLC_CLUSTER_MODE: 'false'
+      # 从服务器地址，需填写所有集群地址，多个时逗号分开，默认“”
+      GLC_CLUSTER_URLS: ''
+      #【X】是否开启备份，默认false
+      GLC_ENABLE_BACKUP: 'false'
+      #【X】日志中心分组名，默认“default”
+      GLC_GROUP: 'default'
+      #【X】是否开启上传备份至MINIO服务器，默认false
+      GLC_ENABLE_UPLOAD_MINIO: 'false'
+      #【X】MINIO地址，默认“”
+      GLC_MINIO_URL: ''
+      #【X】MINIO用户名，默认“”
+      GLC_MINIO_USER: ''
+      #【X】MINIO密码，默认“”
+      GLC_MINIO_PASS: ''
+      #【X】MINIO桶名，默认“”
+      GLC_MINIO_BUCKET: ''
+      # 使用的最大CPU数量，默认(-1)是最大CPU数量（设定值不在实际数量范围是按最大看待）
+      GLC_GOMAXPROCS: '-1'
+      #是否允许跨域，默认true
+      GLC_ENABLE_CORS: 'false'
+      # 【例】每次查询50条日志，日志全部行都要索引检索（多行时默认只是第一行），开启GZIP压缩
+      #  默认100(有效范围1~1000）
+      GLC_PAGE_SIZE: '50'
+      # 是否检索日志的全部行（日志可能有换行），默认false仅第一行
+      GLC_SEARCH_MULIT_LINE: 'true'
+      #  web服务是否开启Gzip 默认false
+      GLC_ENABLE_WEB_GZIP: 'true'
+      # 【例】开启秘钥，添加日志数据等操作要校验秘钥,默认false
+      GLC_ENABLE_SECURITY_KEY: 'true'
+      # web服务API秘钥的header键名 默认X-GLC-AUTH
+      GLC_HEADER_SECURITY_KEY: 'X-Glc-Auth'
+      # web服务API秘钥 默认 glogcenter
+      GLC_SECURITY_KEY: 'glogcenter'
+      #是否开启rabbitMq消费者接收日志 默认false
+      GLC_ENABLE_AMQP_CONSUME: 'false'
+      # rabbitMq连接地址，例："amqp://user:password@ip:port/" 默认空
+      GLC_AMQP_ADDR: ''
+      # rabbitMq队列名 默认'glc-log-queue'
+      GLC_AMQP_QUEUE_NAME: 'glc-log-queue'
+      # rabbitMq消息文本是否为json格式，默认true
+      GLC_AMQP_JSON_FORMAT: 'true'
+      # 【例】想快速体验时，开启测试模式，可在页面上点击生成测试数据 默认true
+      GLC_TEST_MODE: 'false'
+       #是否启用用户中心模式，默认true
+      GLC_UC_ENABLE: 'true'
+      # 用户中心模式，appKey,默认""
+      GLC_UC_APP_KEY: ''
+      # 用户中心模式，appSecret,默认""
+      GLC_UC_APP_SECRET: ''
+      # 用户中心模式，用户中心地址,默认""
+      GLC_UC_APP_URL: ''
+    volumes:
+      - /volumes/glc:/glogcenter
