@@ -1,7 +1,6 @@
 package onstart
 
 import (
-	"github.com/gotoeasy/glang/cmn"
 	"glc/conf"
 	"glc/gweb"
 	"glc/gweb/http"
@@ -14,13 +13,12 @@ import (
 )
 
 func Run() {
-	cmn.Info("Http Server Start")
+
 	http.StartHttpServer(func() {
 
 		contextPath := conf.GetContextPath() // ContextPath
 
 		// Html静态文件
-		gweb.RegisterController(method.GET, "/loginbyuc", html.HomeIndexHtmlController)    // [响应/loginbyuc]
 		gweb.RegisterController(method.GET, contextPath+"/", html.HomeIndexHtmlController) // [响应/glc/]
 		gweb.RegisterController(method.GET, "/**/*.html", html.StaticFileController)
 		gweb.RegisterController(method.GET, "/**/*.css", html.StaticFileController)
@@ -58,6 +56,7 @@ func Run() {
 		gweb.RegisterController(method.POST, contextPath+conf.SysUserTransferChgPsw, controller.UserTransferChangePswController) // [用户]转发修改自己密码
 		gweb.RegisterController(method.POST, contextPath+conf.SysUserTransferSave, controller.UserTransferSaveController)        // [用户]转发保存
 		gweb.RegisterController(method.POST, contextPath+conf.SysUserTransferDel, controller.UserTransferDelController)          // [用户]转发删除
+		gweb.RegisterController(method.POST, contextPath+"/v1/sys/chatai", controller.ChatAiController)                          // 查询是否开启智能助手
 
 		// 集群操作接口
 		gweb.RegisterController(method.POST, contextPath+"/sys/cluster/info", controller.ClusterGetClusterInfoController)   // 获取集群信息

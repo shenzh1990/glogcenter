@@ -101,7 +101,6 @@ const headerHeight = computed(() => `${themeStore.headerHeight}px`);
 const needLogin = computed(() => tokenStore.needLogin == 'true');
 const headerColor = computed(() => {
   if (themeStore.headerBgColor.toLowerCase() === '#ffffff') {
-    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
     themeStore.headerColor = '#606266';
   }
   return themeStore.headerColor
@@ -109,10 +108,8 @@ const headerColor = computed(() => {
 const headerActiveColor = computed(() => {
   if (!themeStore.customHeaderColor) {
     if (themeStore.headerBgColor.toLowerCase() === '#ffffff') {
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       themeStore.headerActiveColor = '#606266';
     } else {
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       themeStore.headerActiveColor = themeStore.headerColor;
     }
   }
@@ -121,10 +118,8 @@ const headerActiveColor = computed(() => {
 const headerActiveBgColor = computed(() => {
   if (!themeStore.customHeaderColor) {
     if (themeStore.headerBgColor.toLowerCase() === '#ffffff') {
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       themeStore.headerActiveBgColor = gxUtil.darkColor(themeStore.headerBgColor, 0.1);
     } else {
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       themeStore.headerActiveBgColor = gxUtil.lightColor(themeStore.headerBgColor);
     }
   }
@@ -169,7 +164,7 @@ const fnOpenChangePswDialog = () => {
 async function logout() {
   if (await $msg.confirm('确定要退出系统吗？')) {
     userLogout();
-    router.push('/login');
+    router.push('/glc/login');
   }
 }
 
@@ -208,7 +203,7 @@ function checkVersion() {
 
 </script>
 
-<style  lang="scss">
+<style lang="scss">
 div.el-popper.el-dropdown__popper.el-popper {
   margin-top: -8px;
   margin-left: 8px;

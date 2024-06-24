@@ -14,7 +14,7 @@ import (
 )
 
 func init() {
-	cmn.Info("Daemon init")
+
 	// 命令行参数解析，【-d】后台方式启动，【stop】停止，【restart】重启，【-v/version/--version/-version】查看版本
 	// 内部用特殊参数，提示docker方式启动【--docker】固定为非后台方式
 	daemon := false
@@ -61,9 +61,10 @@ func init() {
 			return
 		}
 	}
+
 	// 端口冲突时退出
-	if cmn.IsPortOpening("8080") {
-		fmt.Printf("%s\n", "port 8080 conflict, startup failed.")
+	if !(stop || restart) && cmn.IsPortOpening(conf.GetServerPort()) {
+		fmt.Printf("%s\n", "port "+conf.GetServerPort()+" conflict, startup failed.")
 		os.Exit(0)
 	}
 

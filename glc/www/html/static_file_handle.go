@@ -17,7 +17,6 @@ func RedirectToHomeController(req *gweb.HttpRequest) *gweb.HttpResult {
 
 // 响应请求[/glc/]，读取index.html返回
 func HomeIndexHtmlController(req *gweb.HttpRequest) *gweb.HttpResult {
-	cmn.Info("请求", req.RequestUrlPath())
 	file, err := www.Static.ReadFile("web/dist/index.html")
 	if err != nil && os.IsNotExist(err) {
 		req.ResponseData(404, "text/html", cmn.StringToBytes("not found"))

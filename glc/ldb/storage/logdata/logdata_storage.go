@@ -81,8 +81,8 @@ func NewLogDataStorage(storeName string) *LogDataStorage { // 存储器，文档
 	store.closing = false
 	store.lastTime = time.Now().Unix()
 	store.storeChan = make(chan *LogDataModel, conf.GetStoreChanLength()) // 初始化管道，设定缓冲
-	storageRoot := conf.GetStorageRoot()
-	dbPath := storageRoot + cmn.PathSeparator() + cacheName
+
+	dbPath := conf.GetStorageRoot() + cmn.PathSeparator() + cacheName
 	db, err := leveldb.OpenFile(dbPath, nil) // 打开（在指定子目录中存放数据）
 	if err != nil {
 		cmn.Error("打开LogDataStorage失败：", dbPath)
@@ -189,13 +189,13 @@ func (s *LogDataStorage) createInvertedIndex() int {
 	// 整理生成关键词
 	var adds []string
 	if docm.System != "" {
-		adds = append(adds, "~"+docm.System)
+		adds = append(adds, "~"+cmn.ToLower(docm.System))
 	}
 	if docm.LogLevel != "" {
-		adds = append(adds, "!"+docm.LogLevel)
+		adds = append(adds, "!"+cmn.ToLower(docm.LogLevel))
 	}
 	if docm.User != "" {
-		adds = append(adds, "@"+docm.User)
+		adds = append(adds, "@"+cmn.ToLower(docm.User))
 	}
 
 	tgtStr := docm.System + " " + docm.ServerName + " " + docm.ServerIp + " " + docm.ClientIp + " " + docm.TraceId + " " + docm.LogLevel + " " + docm.User

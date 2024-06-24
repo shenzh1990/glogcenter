@@ -53,12 +53,14 @@ var enableUploadMinio bool
 var goMaxProcess int
 var enableCors bool
 var pageSize int
+var nearSearchSize int
 var mulitLineSearch bool
 var testMode bool
 var tokenSalt string
 var aryWhite []string
 var aryBlack []string
 var ipAddCity bool
+var enableChatAi bool
 var ucEnable bool
 var ucAppKey string
 var ucAppSecret string
@@ -107,7 +109,9 @@ func UpdateConfigByEnv() {
 	enableCors = cmn.GetEnvBool("GLC_ENABLE_CORS", true)                        // 是否允许跨域，默认false
 	pageSize = getPageSizeConf(cmn.GetEnvInt("GLC_PAGE_SIZE", 100))             // 每次检索件数，默认100（有效范围1~1000）
 	mulitLineSearch = cmn.GetEnvBool("GLC_SEARCH_MULIT_LINE", false)            // 是否检索日志的全部行（日志可能有换行），默认false仅第一行
-	testMode = cmn.GetEnvBool("GLC_TEST_MODE", true)                            // 是否测试模式，默认false
+	testMode = cmn.GetEnvBool("GLC_TEST_MODE", true)
+	nearSearchSize = getNearSearchSizeConf(cmn.GetEnvInt("GLC_NEAR_SEARCH_SIZE", 200)) // 定位相邻检索的查询件数，默认200（有效范围50~1000）
+	enableChatAi = cmn.GetEnvBool("GLC_ENABLE_CHATAI", true)                           // 是否开启GLC智能助手，默认true// 是否测试模式，默认false
 	//新增，配合用户中心使用
 	//    appKey:  SoqpfiO880oIvbp1
 	//    appSecret: nWPlqRnRWbMkqiKz6J67HZfFjEDDWlve
@@ -142,6 +146,16 @@ func GetUcAppUrl() string {
 // 取配置： 用户中心模式，用户中心首页地址,默认""
 func GetUcHomeUrl() string {
 	return ucHomeUrl
+}
+
+// 取配置： 是否开启GLC智能助手
+func IsEnableChatAi() bool {
+	return enableChatAi
+}
+
+// 取配置： 定位相邻检索的查询件数，可通过环境变量“GLC_NEAR_SEARCH_SIZE”设定，默认200件
+func GetNearSearchSize() int {
+	return nearSearchSize
 }
 
 // 取配置： IP是否要自动附加城市信息，默认false
@@ -182,6 +196,15 @@ func IsMulitLineSearch() bool {
 // 取配置： 每次检索件数，可通过环境变量“GLC_PAGE_SIZE”设定，默认100（有效范围1~1000）
 func GetPageSize() int {
 	return pageSize
+}
+func getNearSearchSizeConf(n int) int {
+	if n < 50 {
+		n = 50
+	}
+	if n > 1000 {
+		n = 1000
+	}
+	return n
 }
 func getPageSizeConf(n int) int {
 	if n < 1 {
