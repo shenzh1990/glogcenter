@@ -75,6 +75,8 @@ docker run -d -p 8080:8080 -e GLC_CLUSTER_MODE=true -e GLC_SERVER_URL=http://172
 - [x] `GLC_WHITE_LIST`白名单，多个用逗号分隔，黑白名单冲突时白名单优先，默认空白。可设定IP，最后段支持通配符，如`1.2.3.*`，内网IP默认都是白名单不必设定，实验性质的支持区域名称（因为IP地域查询可能有误差），如`上海市,深圳市`
 - [x] `GLC_BLACK_LIST`黑名单，多个用逗号分隔，黑白名单冲突时白名单优先，默认空白。可设定IP，最后段支持通配符，如`1.2.3.*`，也支持单个通配符`*`代表全部（也就是只允许内网或白名单指定使用），实验性质的支持区域名称（因为IP地域查询可能有误差）
 - [x] `GLC_IP_ADD_CITY`对IP字段是否自动附加城市信息，默认`false`
+- [x] `GLC_NEAR_SEARCH_SIZE`定位相邻检索时的检索件数，默认200，有效范围50-1000
+- [x] `GLC_ENABLE_CHATAI`是否开启GLC智能助手，默认true，会在菜单栏显示
 
 
 ## 接口
@@ -103,7 +105,7 @@ curl -X POST -d '{"system":"demo", "date":"2023-01-01 01:02:03.456","text":"demo
 <dependency>
     <groupId>top.gotoeasy</groupId>
     <artifactId>glc-logback-appender</artifactId>
-    <version>0.14.1</version>
+    <version>0.16.0</version>
 </dependency>
 ```
 
@@ -163,11 +165,14 @@ curl -X POST -d '{"system":"demo", "date":"2023-01-01 01:02:03.456","text":"demo
 ## 使用`golang`语言的项目，提供工具包，开箱即用
 ```shell
 # 方式1）通过环境变量自动配置，程序直接使用cmn.Debug(...)写日志即可
-export GLC_ENABLE=true # 此配置默认false，要生效必须配置为true
-export GLC_API_URL='http://127.0.0.1:8080/glc/v1/log/add'
-export GLC_API_KEY='X-GLC-AUTH:glogcenter'
-export GLC_SYSTEM=demo
+export GLC_ENABLE=true # 此配置默认false，要发送日志中心必须配置为true
+export GLC_ENABLE_CONSOLE_LOG=true # 默认true，控制台不打印时配置为false
+export GLC_API_URL='http://127.0.0.1:8080/glc/v1/log/add' # 未配置时将取消发送
+export GLC_API_KEY='X-GLC-AUTH:glogcenter' # 这是默认值，按需修改
+export GLC_SYSTEM=default  # 默认default，按需修改
 export GLC_LOG_LEVEL=debug # 日志级别（debug/info/warn/error）
+export GLC_TRACE_ID=12345  # 默认空，跨进程调用等一些特殊场景使用
+export GLC_PRINT_SRC_LINE=true # 是否打印源码行号，go语言专用，默认false
 ```
 
 ```golang
@@ -191,6 +196,34 @@ func main() {
 ```
 
 
+## 使用`python`语言的项目，提供工具包，开箱即用
+```shell
+# 支持以下环境变量配置
+export GLC_ENABLE=true # 默认false，要发送日志中心必须配置为true
+export GLC_ENABLE_CONSOLE_LOG=true # 默认true，控制台不打印时配置为false
+export GLC_API_URL='http://127.0.0.1:8080/glc/v1/log/add' # 未配置时将取消发送
+export GLC_API_KEY='X-GLC-AUTH:glogcenter' # 这是默认值，按需修改
+export GLC_SYSTEM=default  # 默认default，按需修改
+export GLC_LOG_LEVEL=debug # 日志级别（debug/info/warn/error），默认debug
+export GLC_TRACE_ID=12345  # 默认空，跨进程调用等一些特殊场景使用
+```
+
+```python
+# 安装
+pip install glogcenter
+
+# 使用
+from glogcenter import glc
+
+glc.debug("这是Debug级别日志")
+glc.info("这是Info级别日志", "多个参数", "会被拼接")
+gd = glc.GlcData()
+gd.user = 'abcd'
+glc.warn("这里的GlcData类型参数都不会打印", "gd只起传值作用", gd)
+glc.error("gd参数顺序无关", gd, "用法如同log库，但对GlcData做了特殊的判断处理")
+```
+
+
 ## 更新履历
 
 ### 开发版`latest`
@@ -198,9 +231,20 @@ func main() {
 - [ ] 日志审计、告警
 - [ ] 集群支持动态删减节点（或是页面管理删除）
 
+
+### 版本`0.16.0`
+
+- [x] 分词优化
+- [x] 大幅提升建索引速度（强烈推荐使用固态硬盘）
+
+
+<details>
+<summary><strong><mark>更多历史版本更新履历</mark></strong></summary> 
+
 ### 版本`0.15.2`
 
 - [x] 支持#44： 方便ngnix目录方式代理
+- [x] 部分瑕疵修复
 
 ### 版本`0.15.1`
 
@@ -214,9 +258,6 @@ func main() {
 - [x] 新增Python客户端工具包，方便Python语言的项目接入日志中心
 - [x] 修复一些已知问题
 
-
-<details>
-<summary><strong><mark>更多历史版本更新履历</mark></strong></summary> 
 
 ### 版本`0.14.2`
 

@@ -51,6 +51,7 @@ var minioPassword string
 var minioBucket string
 var enableUploadMinio bool
 var goMaxProcess int
+var goMaxProcessIdx int
 var enableCors bool
 var pageSize int
 var nearSearchSize int
@@ -74,41 +75,42 @@ func init() {
 
 func UpdateConfigByEnv() {
 	// 读取环境变量初始化配置，各配置都有默认值
-	storeChanLength = cmn.GetEnvInt("GLC_STORE_CHAN_LENGTH", 64)                // 【X】存储通道长度
-	maxIdleTime = cmn.GetEnvInt("GLC_MAX_IDLE_TIME", 300)                       // 【X】最大闲置时间（秒）,超过闲置时间将自动关闭，0时表示不关闭
-	storeNameAutoAddDate = cmn.GetEnvBool("GLC_STORE_NAME_AUTO_ADD_DATE", true) // 存储名是否自动添加日期（日志量大通常按日单位区分存储），默认true
-	serverUrl = cmn.GetEnvStr("GLC_SERVER_URL", "")                             // 服务URL，默认“”，集群配置时自动获取地址可能不对，可通过这个设定
-	serverIp = cmn.GetEnvStr("GLC_SERVER_IP", "")                               // 【X】服务IP，默认“”，当“”时会自动获取
-	enableSecurityKey = cmn.GetEnvBool("GLC_ENABLE_SECURITY_KEY", false)        // web服务是否开启API秘钥校验，默认false
-	headerSecurityKey = cmn.GetEnvStr("GLC_HEADER_SECURITY_KEY", "X-GLC-AUTH")  // web服务API秘钥的header键名
-	securityKey = cmn.GetEnvStr("GLC_SECURITY_KEY", "glogcenter")               // web服务API秘钥
-	enableWebGzip = cmn.GetEnvBool("GLC_ENABLE_WEB_GZIP", false)                // web服务是否开启Gzip
-	enableAmqpConsume = cmn.GetEnvBool("GLC_ENABLE_AMQP_CONSUME", false)        // 是否开启rabbitMq消费者接收日志
-	amqpAddr = cmn.GetEnvStr("GLC_AMQP_ADDR", "")                               // rabbitMq连接地址，例："amqp://user:password@ip:port/"
-	amqpQueueName = cmn.GetEnvStr("GLC_AMQP_QUEUE_NAME", "glc-log-queue")       // rabbitMq队列名
-	amqpJsonFormat = cmn.GetEnvBool("GLC_AMQP_JSON_FORMAT", true)               // rabbitMq消息文本是否为json格式，默认true
-	saveDays = cmn.GetEnvInt("GLC_SAVE_DAYS", 180)                              // 日志分仓时的保留天数(0~1200)，0表示不自动删除，默认180天
-	enableLogin = cmn.GetEnvBool("GLC_ENABLE_LOGIN", true)                      // 是否开启用户密码登录，默认“false”
-	sessionTimeout = cmn.GetEnvInt("GLC_SESSION_TIMEOUT", 30)                   // 登录会话超时时间，默认“30”分钟
-	username = cmn.GetEnvStr("GLC_USERNAME", "glc")                             // 登录用户名，默认“glc”
-	password = cmn.GetEnvStr("GLC_PASSWORD", "GLogCenter100%666")               // 登录密码，默认“GLogCenter100%666”
-	tokenSalt = cmn.GetEnvStr("GLC_TOKEN_SALT", "")                             // 令牌盐，默认“”
-	aryWhite = cmn.Split(cmn.GetEnvStr("GLC_WHITE_LIST", ""), ",")              // IP或区域白名单，逗号分隔，默认“”
-	aryBlack = cmn.Split(cmn.GetEnvStr("GLC_BLACK_LIST", ""), ",")              // IP或区域黑名单，逗号分隔，单个*代表全部，内网地址不受限制，默认“”
-	ipAddCity = cmn.GetEnvBool("GLC_IP_ADD_CITY", false)                        // IP是否要自动附加城市信息，默认false
-	clusterMode = cmn.GetEnvBool("GLC_CLUSTER_MODE", false)                     // 是否开启集群模式，默认false
-	splitUrls(cmn.GetEnvStr("GLC_CLUSTER_URLS", ""))                            // 从服务器地址，多个时逗号分开，默认“”
-	enableBackup = cmn.GetEnvBool("GLC_ENABLE_BACKUP", false)                   // 【X】是否开启备份，默认false
-	glcGroup = cmn.GetEnvStr("GLC_GROUP", "default")                            // 【X】日志中心分组名，默认“default”
-	minioUrl = cmn.GetEnvStr("GLC_MINIO_URL", "")                               // 【X】MINIO地址，默认“”
-	minioUser = cmn.GetEnvStr("GLC_MINIO_USER", "")                             // 【X】MINIO用户名，默认“”
-	minioPassword = cmn.GetEnvStr("GLC_MINIO_PASS", "")                         // 【X】MINIO密码，默认“”
-	minioBucket = cmn.GetEnvStr("GLC_MINIO_BUCKET", "")                         // 【X】MINIO桶名，默认“”
-	enableUploadMinio = cmn.GetEnvBool("GLC_ENABLE_UPLOAD_MINIO", false)        // 【X】是否开启上传备份至MINIO服务器，默认false
-	goMaxProcess = getGoMaxProcessConf(cmn.GetEnvInt("GLC_GOMAXPROCS", -1))     // 使用的最大CPU数量，默认是最大CPU数量（设定值不在实际数量范围是按最大看待）
-	enableCors = cmn.GetEnvBool("GLC_ENABLE_CORS", true)                        // 是否允许跨域，默认false
-	pageSize = getPageSizeConf(cmn.GetEnvInt("GLC_PAGE_SIZE", 100))             // 每次检索件数，默认100（有效范围1~1000）
-	mulitLineSearch = cmn.GetEnvBool("GLC_SEARCH_MULIT_LINE", false)            // 是否检索日志的全部行（日志可能有换行），默认false仅第一行
+	storeChanLength = cmn.GetEnvInt("GLC_STORE_CHAN_LENGTH", 64)                   // 【X】存储通道长度
+	maxIdleTime = cmn.GetEnvInt("GLC_MAX_IDLE_TIME", 300)                          // 【X】最大闲置时间（秒）,超过闲置时间将自动关闭，0时表示不关闭
+	storeNameAutoAddDate = cmn.GetEnvBool("GLC_STORE_NAME_AUTO_ADD_DATE", true)    // 存储名是否自动添加日期（日志量大通常按日单位区分存储），默认true
+	serverUrl = cmn.GetEnvStr("GLC_SERVER_URL", "")                                // 服务URL，默认“”，集群配置时自动获取地址可能不对，可通过这个设定
+	serverIp = cmn.GetEnvStr("GLC_SERVER_IP", "")                                  // 【X】服务IP，默认“”，当“”时会自动获取
+	enableSecurityKey = cmn.GetEnvBool("GLC_ENABLE_SECURITY_KEY", false)           // web服务是否开启API秘钥校验，默认false
+	headerSecurityKey = cmn.GetEnvStr("GLC_HEADER_SECURITY_KEY", "X-GLC-AUTH")     // web服务API秘钥的header键名
+	securityKey = cmn.GetEnvStr("GLC_SECURITY_KEY", "glogcenter")                  // web服务API秘钥
+	enableWebGzip = cmn.GetEnvBool("GLC_ENABLE_WEB_GZIP", false)                   // web服务是否开启Gzip
+	enableAmqpConsume = cmn.GetEnvBool("GLC_ENABLE_AMQP_CONSUME", false)           // 是否开启rabbitMq消费者接收日志
+	amqpAddr = cmn.GetEnvStr("GLC_AMQP_ADDR", "")                                  // rabbitMq连接地址，例："amqp://user:password@ip:port/"
+	amqpQueueName = cmn.GetEnvStr("GLC_AMQP_QUEUE_NAME", "glc-log-queue")          // rabbitMq队列名
+	amqpJsonFormat = cmn.GetEnvBool("GLC_AMQP_JSON_FORMAT", true)                  // rabbitMq消息文本是否为json格式，默认true
+	saveDays = cmn.GetEnvInt("GLC_SAVE_DAYS", 180)                                 // 日志分仓时的保留天数(0~1200)，0表示不自动删除，默认180天
+	enableLogin = cmn.GetEnvBool("GLC_ENABLE_LOGIN", true)                         // 是否开启用户密码登录，默认“false”
+	sessionTimeout = cmn.GetEnvInt("GLC_SESSION_TIMEOUT", 30)                      // 登录会话超时时间，默认“30”分钟
+	username = cmn.GetEnvStr("GLC_USERNAME", "glc")                                // 登录用户名，默认“glc”
+	password = cmn.GetEnvStr("GLC_PASSWORD", "GLogCenter100%666")                  // 登录密码，默认“GLogCenter100%666”
+	tokenSalt = cmn.GetEnvStr("GLC_TOKEN_SALT", "")                                // 令牌盐，默认“”
+	aryWhite = cmn.Split(cmn.GetEnvStr("GLC_WHITE_LIST", ""), ",")                 // IP或区域白名单，逗号分隔，默认“”
+	aryBlack = cmn.Split(cmn.GetEnvStr("GLC_BLACK_LIST", ""), ",")                 // IP或区域黑名单，逗号分隔，单个*代表全部，内网地址不受限制，默认“”
+	ipAddCity = cmn.GetEnvBool("GLC_IP_ADD_CITY", false)                           // IP是否要自动附加城市信息，默认false
+	clusterMode = cmn.GetEnvBool("GLC_CLUSTER_MODE", false)                        // 是否开启集群模式，默认false
+	splitUrls(cmn.GetEnvStr("GLC_CLUSTER_URLS", ""))                               // 从服务器地址，多个时逗号分开，默认“”
+	enableBackup = cmn.GetEnvBool("GLC_ENABLE_BACKUP", false)                      // 【X】是否开启备份，默认false
+	glcGroup = cmn.GetEnvStr("GLC_GROUP", "default")                               // 【X】日志中心分组名，默认“default”
+	minioUrl = cmn.GetEnvStr("GLC_MINIO_URL", "")                                  // 【X】MINIO地址，默认“”
+	minioUser = cmn.GetEnvStr("GLC_MINIO_USER", "")                                // 【X】MINIO用户名，默认“”
+	minioPassword = cmn.GetEnvStr("GLC_MINIO_PASS", "")                            // 【X】MINIO密码，默认“”
+	minioBucket = cmn.GetEnvStr("GLC_MINIO_BUCKET", "")                            // 【X】MINIO桶名，默认“”
+	enableUploadMinio = cmn.GetEnvBool("GLC_ENABLE_UPLOAD_MINIO", false)           // 【X】是否开启上传备份至MINIO服务器，默认false
+	goMaxProcess = getGoMaxProcessConf(cmn.GetEnvInt("GLC_GOMAXPROCS", -1))        // 使用的最大CPU数量，默认是最大CPU数量（设定值不在实际数量范围是按最大看待）
+	goMaxProcessIdx = getGoMaxProcessConf(cmn.GetEnvInt("GLC_GOMAXPROCS_IDX", -1)) // 创建索引使用的最大协程数量，默认是最大CPU数量（设定值不在实际数量范围是按最大看待）
+	enableCors = cmn.GetEnvBool("GLC_ENABLE_CORS", true)                           // 是否允许跨域，默认false
+	pageSize = getPageSizeConf(cmn.GetEnvInt("GLC_PAGE_SIZE", 100))                // 每次检索件数，默认100（有效范围1~1000）
+	mulitLineSearch = cmn.GetEnvBool("GLC_SEARCH_MULIT_LINE", false)               // 是否检索日志的全部行（日志可能有换行），默认false仅第一行
 	testMode = cmn.GetEnvBool("GLC_TEST_MODE", true)
 	nearSearchSize = getNearSearchSizeConf(cmn.GetEnvInt("GLC_NEAR_SEARCH_SIZE", 200)) // 定位相邻检索的查询件数，默认200（有效范围50~1000）
 	enableChatAi = cmn.GetEnvBool("GLC_ENABLE_CHATAI", true)                           // 是否开启GLC智能助手，默认true// 是否测试模式，默认false
@@ -219,6 +221,11 @@ func getPageSizeConf(n int) int {
 // 取配置： 是否允许跨域，可通过环境变量“GLC_ENABLE_CROSS”设定，默认false
 func IsEnableCors() bool {
 	return enableCors
+}
+
+// 取配置： 创建索引使用的最大协程数量，默认是最大CPU数量（设定值不在实际数量范围是按最大看待）
+func GetGoMaxProcessIdx() int {
+	return goMaxProcessIdx
 }
 
 // 取配置： 使用的最大CPU数量，可通过环境变量“GLC_GOMAXPROCS”设定，默认最大CPU数量
