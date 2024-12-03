@@ -351,6 +351,9 @@ func GetServerPort() string {
 
 // 取配置：存储根目录，可通过环境变量“GLC_STORE_ROOT”设定，默认值“/glogcenter”
 func GetStorageRoot() string {
+	if cmn.IsMac() {
+		return "/Users/shenzehua/Downloads" + storeRoot
+	}
 	return storeRoot
 }
 
