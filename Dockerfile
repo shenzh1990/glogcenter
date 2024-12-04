@@ -1,5 +1,5 @@
 FROM alpine:latest
-LABEL MAINTAINER="mllog"
+LABEL MAINTAINER="bitcon"
 
 WORKDIR /glc
 COPY ./glc/bin/linux64 ./

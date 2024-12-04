@@ -11,8 +11,8 @@ RELEASE_ROOT = release
 RELEASE_NAME = glocenter
 RELEASE_LATEST = $(RELEASE_ROOT)/$(RELEASE_NAME)
 NOW = $(shell date -u '+%Y%m%d%I%M%S')
-REMOTE_URL=qinali
-REMOTE_DIR=/
+REMOTE_URL=hangali
+REMOTE_DIR=/root/glclog
 
 run:
 	$(GORUN) main.go
@@ -25,12 +25,17 @@ build-darwin64: clean
 	@GOOS=darwin GOARCH=amd64 go build -ldflags "-w -s" -o $(BIN_ROOT)/darwin64/$(BIN_NAME) main.go
 
 
-
+##COPY ./glc/bin/linux64 ./
+  #COPY ./glc/www/web/dist ./web/dist
 pack-linux64: clean-bin build-linux64
-	@echo "cp $(BIN_NAME) To $(REMOTE_URL):$(REMOTE_DIR)/$(BIN_NAME)"
+	@echo "scp ./$(BIN_ROOT)/linux64/$(BIN_NAME) $(REMOTE_URL):$(REMOTE_DIR)/$(BIN_NAME)"
 	@scp ./$(BIN_ROOT)/linux64/$(BIN_NAME)  $(REMOTE_URL):$(REMOTE_DIR)/$(BIN_NAME)
 	@echo "success"
 
+pack-web: clean-bin 
+	@echo "scp -r ./www/web/dist $(REMOTE_URL):$(REMOTE_DIR)/web/dist"
+	@scp -r ./www/web/dist $(REMOTE_URL):$(REMOTE_DIR)/web/dist
+	@echo "success"
 clean-bin:
 	rm -rf $(BIN_ROOT)
 
