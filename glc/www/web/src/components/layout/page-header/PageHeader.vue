@@ -2,7 +2,7 @@
   <GxToolbar :height="themeStore.headerHeight">
     <template #left>
       <div style="display:flex;align-items:center;margin-left:8px;line-height: 30px;">
-        <div :title="verInfo" style="width: 34px;color:white;text-align:center;cursor:pointer;" @click="clickLogo">
+        <div :title="verInfo" style="width: 34px;color:white;text-align:center;cursor:pointer;">
           <img src="/image/glc.png" style="width:34px;margin-top:9px;" />
         </div>
         <div style="text-align:center;">
@@ -168,22 +168,22 @@ async function logout() {
 }
 
 const clickLogo = () => {
-  window.open('https://github.com/gotoeasy/glogcenter', '_blank');
+  window.open('', '_blank');
 };
 
 function checkVersion() {
-  if (!checkVersionDone.value) {
-    checkVersionDone.value = true;
-    // 从后台服务读取当前运行版本，避免多处维护版本号
-    $post('/v1/version/info', {}, null, { 'Content-Type': 'application/x-www-form-urlencoded' }).then(rs => {
-      if (rs.success) {
-        verInfo.value = rs.result.version
-        if (rs.result.latest && normalizeVer(rs.result.version) < normalizeVer(rs.result.latest)) {
-          verInfo.value = `当前版本 ${rs.result.version} ，有新版本 ${rs.result.latest} 可更新`
-        }
-      }
-    });
-  }
+  // if (!checkVersionDone.value) {
+  //   checkVersionDone.value = true;
+  //   // 从后台服务读取当前运行版本，避免多处维护版本号
+  //   $post('/v1/version/info', {}, null, { 'Content-Type': 'application/x-www-form-urlencoded' }).then(rs => {
+  //     if (rs.success) {
+  //       verInfo.value = rs.result.version
+  //       if (rs.result.latest && normalizeVer(rs.result.version) < normalizeVer(rs.result.latest)) {
+  //         verInfo.value = `当前版本 ${rs.result.version} ，有新版本 ${rs.result.latest} 可更新`
+  //       }
+  //     }
+  //   });
+  // }
 }
 
 // 0.1.2 => v100.1001.1002

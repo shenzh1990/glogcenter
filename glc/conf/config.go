@@ -20,9 +20,9 @@ const SysUserTransferChgPsw = "/v1/sysuser/transferChgPsw"
 const SysUserTransferDel = "/v1/sysuser/transferDel"
 const UserTransferLogin = "/v1/user/transferLogin"
 
-var storeRoot string = "/glogcenter" // 【固定】容器化缘故，不适合修改
-var serverPort string = "8080"       // 【固定】容器化缘故，不适合修改
-var contextPath string = "/glc"      // 【固定】容器化缘故，不适合修改
+var storeRoot string = "/data/glogcenter" // 【固定】容器化缘故，不适合修改
+var serverPort string = "8888"            // 【固定】容器化缘故，不适合修改
+var contextPath string = "/glc"           // 【固定】容器化缘故，不适合修改
 var storeChanLength int
 var maxIdleTime int
 var storeNameAutoAddDate bool
@@ -69,7 +69,7 @@ func init() {
 
 func UpdateConfigByEnv() {
 	// 读取环境变量初始化配置，各配置都有默认值
-	storeChanLength = cmn.GetEnvInt("GLC_STORE_CHAN_LENGTH", 64)                       // 【X】存储通道长度
+	storeChanLength = cmn.GetEnvInt("GLC_STORE_CHAN_LENGTH", 12800)                    // 【X】存储通道长度
 	maxIdleTime = cmn.GetEnvInt("GLC_MAX_IDLE_TIME", 300)                              // 【X】最大闲置时间（秒）,超过闲置时间将自动关闭，0时表示不关闭
 	storeNameAutoAddDate = cmn.GetEnvBool("GLC_STORE_NAME_AUTO_ADD_DATE", true)        // 存储名是否自动添加日期（日志量大通常按日单位区分存储），默认true
 	serverUrl = cmn.GetEnvStr("GLC_SERVER_URL", "")                                    // 服务URL，默认“”，集群配置时自动获取地址可能不对，可通过这个设定
@@ -83,10 +83,10 @@ func UpdateConfigByEnv() {
 	amqpQueueName = cmn.GetEnvStr("GLC_AMQP_QUEUE_NAME", "glc-log-queue")              // rabbitMq队列名
 	amqpJsonFormat = cmn.GetEnvBool("GLC_AMQP_JSON_FORMAT", true)                      // rabbitMq消息文本是否为json格式，默认true
 	saveDays = cmn.GetEnvInt("GLC_SAVE_DAYS", 15)                                      // 日志分仓时的保留天数(0~1200)，0表示不自动删除，默认180天
-	enableLogin = cmn.GetEnvBool("GLC_ENABLE_LOGIN", false)                            // 是否开启用户密码登录，默认“false”
+	enableLogin = cmn.GetEnvBool("GLC_ENABLE_LOGIN", true)                             // 是否开启用户密码登录，默认“false”
 	sessionTimeout = cmn.GetEnvInt("GLC_SESSION_TIMEOUT", 30)                          // 登录会话超时时间，默认“30”分钟
-	username = cmn.GetEnvStr("GLC_USERNAME", "glc")                                    // 登录用户名，默认“glc”
-	password = cmn.GetEnvStr("GLC_PASSWORD", "GLogCenter100%666")                      // 登录密码，默认“GLogCenter100%666”
+	username = cmn.GetEnvStr("GLC_USERNAME", "btcAdmin")                               // 登录用户名，默认“btcAdmin”
+	password = cmn.GetEnvStr("GLC_PASSWORD", "Abc123@!")                               // 登录密码，默认“Abc123@!666”
 	tokenSalt = cmn.GetEnvStr("GLC_TOKEN_SALT", "")                                    // 令牌盐，默认“”
 	aryWhite = cmn.Split(cmn.GetEnvStr("GLC_WHITE_LIST", ""), ",")                     // IP或区域白名单，逗号分隔，默认“”
 	aryBlack = cmn.Split(cmn.GetEnvStr("GLC_BLACK_LIST", ""), ",")                     // IP或区域黑名单，逗号分隔，单个*代表全部，内网地址不受限制，默认“”
@@ -102,7 +102,7 @@ func UpdateConfigByEnv() {
 	enableUploadMinio = cmn.GetEnvBool("GLC_ENABLE_UPLOAD_MINIO", false)               // 【X】是否开启上传备份至MINIO服务器，默认false
 	goMaxProcess = getGoMaxProcessConf(cmn.GetEnvInt("GLC_GOMAXPROCS", -1))            // 使用的最大CPU数量，默认是最大CPU数量（设定值不在实际数量范围是按最大看待）
 	goMaxProcessIdx = getGoMaxProcessConf(cmn.GetEnvInt("GLC_GOMAXPROCS_IDX", -1))     // 创建索引使用的最大协程数量，默认是最大CPU数量（设定值不在实际数量范围是按最大看待）
-	enableCors = cmn.GetEnvBool("GLC_ENABLE_CORS", false)                              // 是否允许跨域，默认false
+	enableCors = cmn.GetEnvBool("GLC_ENABLE_CORS", true)                               // 是否允许跨域，默认false
 	pageSize = getPageSizeConf(cmn.GetEnvInt("GLC_PAGE_SIZE", 100))                    // 每次检索件数，默认100（有效范围1~1000）
 	nearSearchSize = getNearSearchSizeConf(cmn.GetEnvInt("GLC_NEAR_SEARCH_SIZE", 200)) // 定位相邻检索的查询件数，默认200（有效范围50~1000）
 	mulitLineSearch = cmn.GetEnvBool("GLC_SEARCH_MULIT_LINE", false)                   // 是否检索日志的全部行（日志可能有换行），默认false仅第一行

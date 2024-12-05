@@ -122,7 +122,7 @@ func StorageDeleteController(req *gweb.HttpRequest) *gweb.HttpResult {
 	name := req.GetFormParameter("storeName")
 	if name == ".sysmnt" {
 		return gweb.Error500("不能删除 .sysmnt")
-	} else if conf.IsStoreNameAutoAddDate() {
+	} else if !conf.IsStoreNameAutoAddDate() { //自动维护允许主动删除
 		if conf.GetSaveDays() > 0 {
 			ymd := cmn.Right(name, 8)
 			if cmn.Len(ymd) == 8 && cmn.Startwiths(ymd, "20") {
@@ -151,15 +151,16 @@ func StorageDeleteController(req *gweb.HttpRequest) *gweb.HttpResult {
 
 // 尝试查询最新版本号（注：服务不一定总是可用，每小时查取一次）
 func init() {
-	go func() {
-		url := "https://glc.gotoeasy.top/glogcenter/current/version.json?v=" + ver.VERSION + "&h=" + cmn.Base62Encode(cmn.StringToBytes(glcOrigin))
-		v := cmn.GetGlcLatestVersion(url)
-		glcLatest = cmn.IifStr(v != "", v, glcLatest)
-		ticker := time.NewTicker(time.Hour)
-		for range ticker.C {
-			url = "https://glc.gotoeasy.top/glogcenter/current/version.json?v=" + ver.VERSION + "&h=" + cmn.Base62Encode(cmn.StringToBytes(glcOrigin))
-			v = cmn.GetGlcLatestVersion(url)
-			glcLatest = cmn.IifStr(v != "", v, glcLatest)
-		}
-	}()
+	//不需要查询
+	//go func() {
+	//	url := "https://glc.gotoeasy.top/glogcenter/current/version.json?v=" + ver.VERSION + "&h=" + cmn.Base62Encode(cmn.StringToBytes(glcOrigin))
+	//	v := cmn.GetGlcLatestVersion(url)
+	//	glcLatest = cmn.IifStr(v != "", v, glcLatest)
+	//	ticker := time.NewTicker(time.Hour)
+	//	for range ticker.C {
+	//		url = "https://glc.gotoeasy.top/glogcenter/current/version.json?v=" + ver.VERSION + "&h=" + cmn.Base62Encode(cmn.StringToBytes(glcOrigin))
+	//		v = cmn.GetGlcLatestVersion(url)
+	//		glcLatest = cmn.IifStr(v != "", v, glcLatest)
+	//	}
+	//}()
 }

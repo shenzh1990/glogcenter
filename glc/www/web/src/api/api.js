@@ -78,7 +78,7 @@ export const getUserMenu = async () => {
       path: '/glc/chatai',
       title: 'GLC智能助手',
       icon: 'ai',
-      component: 'https://ai.youdao.com/saas/qanything/#/bots/C9BA280AA796491F/share',
+      component: '',
       openInner: true,
     });
   }
