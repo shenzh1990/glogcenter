@@ -11,7 +11,8 @@ RELEASE_ROOT = release
 RELEASE_NAME = glocenter
 RELEASE_LATEST = $(RELEASE_ROOT)/$(RELEASE_NAME)
 NOW = $(shell date -u '+%Y%m%d%I%M%S')
-REMOTE_URL=hangali
+#hangali
+REMOTE_URL=root@47.74.31.113
 REMOTE_DIR=/root/glclog
 
 run:
@@ -28,11 +29,11 @@ build-darwin64: clean
 ##COPY ./glc/bin/linux64 ./
   #COPY ./glc/www/web/dist ./web/dist
 pack-linux64: clean-bin build-linux64
-	@echo "scp ./$(BIN_ROOT)/linux64/$(BIN_NAME) $(REMOTE_URL):$(REMOTE_DIR)/$(BIN_NAME)"
-	@scp ./$(BIN_ROOT)/linux64/$(BIN_NAME)  $(REMOTE_URL):$(REMOTE_DIR)/$(BIN_NAME)
+	@echo "scp ./glc/$(BIN_ROOT)/linux64/$(BIN_NAME) $(REMOTE_URL):$(REMOTE_DIR)/$(BIN_NAME)"
+	@scp ./glc/$(BIN_ROOT)/linux64/$(BIN_NAME)  $(REMOTE_URL):$(REMOTE_DIR)/$(BIN_NAME)
 	@echo "success"
 
-pack-web: clean-bin 
+pack-web: clean-bin
 	@echo "scp -r ./www/web/dist $(REMOTE_URL):$(REMOTE_DIR)/web/dist"
 	@scp -r ./www/web/dist $(REMOTE_URL):$(REMOTE_DIR)/web/dist
 	@echo "success"

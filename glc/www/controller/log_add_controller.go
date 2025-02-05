@@ -104,7 +104,22 @@ func addDataModelLog(data *logdata.LogDataModel) {
 			data.ServerIp = cmn.GetCityIp(data.ServerIp)
 		}
 	}
-
+	// 解析字符串为时间
+	//目的解决跨时区问题
+	s := data.Date
+	t, errTime := time.Parse("2006-01-02 15:04:05.000", s)
+	if errTime == nil {
+		// 获取当前时间
+		now := time.Now()
+		// 计算当前时间前后一小时的时间范围
+		oneHourAgo := now.Add(-50 * time.Minute)
+		oneHourLater := now.Add(50 * time.Minute)
+		// 判断时间 t 是否在当前时间前后一小时内
+		if oneHourAgo.Before(t) || t.After(oneHourLater) {
+			t = now
+			data.Date = t.Format("2006-01-02 15:04:05.000")
+		}
+	}
 	engine.AddLogDataModel(data)
 
 	// 缓存系统名称备用查询
